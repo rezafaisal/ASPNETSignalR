@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ChatRoom</title>
+    <script src="./Scripts/jquery-1.10.2.min.js"></script>
+    <script src="./Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="./signalr/hubs" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#UserChat').val(prompt('Enter your name:', ''));
+
+            var hub = $.connection.helloWorld;
+
+            hub.client.connected = function () {
+                alert('User baru bergabung.');
+            }
+
+            hub.client.show = function (user, pesan) {
+                $('#AddText').append('<strong> ' + user + ' :</strong> ' + pesan + '<br />');
+            }
+
+            $.connection.hub.start().done(function () {
+                $('#SubmitButton').click(function () {
+                    hub.server.send($('#UserChat').val(), $('#PesanChat').val());
+                    $('#PesanChat').val('').focus();
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="ChatUser"></div>
+    <input type="text" id="PesanChat" />
+    <input type="button" id="SubmitButton" value="Send" />
+    <div id="AddText"></div>
+<input type="hidden" id="UserChat" />
+</body>
+</html>
